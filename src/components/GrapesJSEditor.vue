@@ -16,7 +16,6 @@
         </button>
       </div>
     </div>
-
     <!-- Основная область редактора -->
     <div class="editor-wrapper">
       <!-- Панель блоков -->
@@ -26,12 +25,10 @@
         </div>
         <div id="blocks" class="panel-content"></div>
       </div>
-
       <!-- Редактор -->
       <div class="editor-main">
         <div ref="editorContainer" class="editor-container"></div>
       </div>
-
       <!-- Панель стилей -->
       <div class="panel panel-right" ref="stylesPanel">
         <div class="panel-header">
@@ -40,7 +37,6 @@
         <div id="styles" class="panel-content"></div>
       </div>
     </div>
-
     <!-- Модальное окно для предпросмотра -->
     <div v-if="showPreview" class="preview-modal" @click="closePreview">
       <div class="preview-content" @click.stop>
@@ -51,7 +47,6 @@
         <div class="preview-body" v-html="previewContent"></div>
       </div>
     </div>
-
     <!-- Статус бар -->
     <div class="status-bar">
       <div class="status-item">
@@ -80,15 +75,14 @@ const editorInstance = ref(null)
 // Данные для предпросмотра
 const previewContent = computed(() => {
   if (!editorInstance.value) return ''
-
   const html = editorInstance.value.getHtml()
   const css = editorInstance.value.getCss()
-
   return `<style>${css}</style>${html}`
 })
 
 // Плагин для колонок
 const columnPlugin = (editor) => {
+  // ... (ваш существующий код для columnPlugin)
   // Добавление кастомных блоков колонок
   editor.BlockManager.add('columns-2', {
     label: '2 Колонки',
@@ -179,6 +173,75 @@ const columnPlugin = (editor) => {
   })
 }
 
+// Новый плагин для сайдбара
+const sidebarPlugin = (editor) => {
+  // Блок "Сайдбар"
+  editor.BlockManager.add('sidebar', {
+    label: 'Сайдбар',
+    category: 'Навигация',
+    media: `
+      <svg width="40" height="30" viewBox="0 0 40 30">
+        <rect x="2" y="2" width="12" height="26" fill="#e0e0e0" stroke="#999"/>
+        <rect x="16" y="2" width="22" height="4" fill="#bdbdbd"/>
+        <rect x="16" y="8" width="18" height="3" fill="#bdbdbd"/>
+        <rect x="16" y="13" width="20" height="3" fill="#bdbdbd"/>
+      </svg>
+    `,
+    content: `
+      <div class="sidebar-container" style="display: flex; min-height: 400px; font-family: Arial, sans-serif;">
+        <!-- Сайдбар -->
+        <div class="sidebar" style="width: 250px; background-color: #f5f5f5; padding: 20px; border-right: 1px solid #ddd;">
+          <!-- Поиск -->
+          <div class="sidebar-search" style="margin-bottom: 20px;">
+            <input type="text" placeholder="Поиск по разделу..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+          </div>
+          <!-- Навигация -->
+          <nav class="sidebar-nav">
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              <li style="margin-bottom: 10px;"><a href="#" style="text-decoration: none; color: #333; display: block; padding: 5px 0;">Главная</a></li>
+              <li style="margin-bottom: 10px;">
+                <a href="#" style="text-decoration: none; color: #333; display: block; padding: 5px 0;">Продукты</a>
+                <ul style="list-style: none; padding-left: 15px; margin-top: 5px;">
+                  <li style="margin-bottom: 5px;"><a href="#" style="text-decoration: none; color: #666; font-size: 0.9em;">Категория 1</a></li>
+                  <li style="margin-bottom: 5px;"><a href="#" style="text-decoration: none; color: #666; font-size: 0.9em;">Категория 2</a></li>
+                </ul>
+              </li>
+              <li style="margin-bottom: 10px;"><a href="#" style="text-decoration: none; color: #333; display: block; padding: 5px 0;">О нас</a></li>
+              <li><a href="#" style="text-decoration: none; color: #333; display: block; padding: 5px 0;">Контакты</a></li>
+            </ul>
+          </nav>
+        </div>
+        <!-- Основной контент -->
+        <div class="main-content" style="flex: 1; padding: 20px;">
+          <h1>Добро пожаловать</h1>
+          <p>Это основная область содержимого. Здесь будет отображаться информация, соответствующая выбранному разделу в сайдбаре.</p>
+        </div>
+      </div>
+    `,
+  });
+
+  // Блок "Текстовая карточка"
+  editor.BlockManager.add('text-card', {
+    label: 'Текстовая карточка',
+    category: 'Компоненты',
+    media: `
+      <svg width="40" height="30" viewBox="0 0 40 30">
+        <rect x="2" y="2" width="36" height="26" fill="#e3f2fd" stroke="#90caf9"/>
+        <rect x="5" y="5" width="30" height="10" fill="#bbdefb"/>
+        <rect x="5" y="17" width="30" height="3" fill="#90caf9"/>
+        <rect x="5" y="22" width="25" height="3" fill="#90caf9"/>
+      </svg>
+    `,
+    content: `
+      <div class="text-card" style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 20px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <img src="https://via.placeholder.com/300x150?text=Изображение" alt="Изображение карточки" style="width: 100%; height: auto; border-radius: 4px; margin-bottom: 10px;">
+        <h3 style="margin-top: 0; margin-bottom: 10px; color: #333;">Заголовок карточки</h3>
+        <p style="margin: 0; color: #666; font-size: 0.9em;">Краткое описание содержимого карточки. Может включать ключевые моменты или анонс материала.</p>
+      </div>
+    `,
+  });
+};
+
 // Инициализация редактора
 const initEditor = () => {
   try {
@@ -188,15 +251,12 @@ const initEditor = () => {
       width: '100%',
       showOffsets: true,
       noticeOnUnload: false,
-
       // Плагины
-      plugins: [columnPlugin],
-
+      plugins: [columnPlugin, sidebarPlugin], // Добавлен sidebarPlugin
       // Настройки блоков
       blockManager: {
         appendTo: '#blocks',
       },
-
       // Настройки стилей
       styleManager: {
         appendTo: '#styles',
@@ -225,7 +285,6 @@ const initEditor = () => {
           },
         ],
       },
-
       // Настройки хранилища
       storageManager: {
         id: 'gjs-',
@@ -238,7 +297,6 @@ const initEditor = () => {
         storeHtml: true,
         storeCss: true,
       },
-
       // Настройки устройства
       deviceManager: {
         devices: [
@@ -257,21 +315,17 @@ const initEditor = () => {
         ],
       },
     })
-
     editorInstance.value = editor
-
     // Обработчики событий
     editor.on('load', () => {
       editorStatus.value = 'Готов'
     })
-
     editor.on('component:add', () => {
       editorStatus.value = 'Элемент добавлен'
       setTimeout(() => {
         editorStatus.value = 'Готов'
       }, 1000)
     })
-
     editorStatus.value = 'Готов'
   } catch (error) {
     editorStatus.value = 'Ошибка инициализации'
@@ -364,22 +418,27 @@ onUnmounted(() => {
   background-color: #007bff;
   color: white;
 }
+
 .btn-secondary {
   background-color: #6c757d;
   color: white;
 }
+
 .btn-info {
   background-color: #17a2b8;
   color: white;
 }
+
 .btn-warning {
   background-color: #ffc107;
   color: black;
 }
+
 .btn-success {
   background-color: #28a745;
   color: white;
 }
+
 .btn-danger {
   background-color: #dc3545;
   color: white;
